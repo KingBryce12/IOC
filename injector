@@ -1,0 +1,31 @@
+import injector
+
+# Define some classes
+class Database:
+    def __init__(self, name):
+        self.name = name
+
+class Logger:
+    def log(self, message):
+        print(f"Logging message: {message}")
+
+class Service:
+    def __init__(self, database, logger):
+        self.database = database
+        self.logger = logger
+
+# Define a module
+class MyModule(injector.Module):
+    def configure(self, binder):
+        binder.bind(Database, to=Database('MyDatabase'))
+        binder.bind(Logger, to=Logger())
+        binder.bind(Service, to=Service)
+
+# Create an injector
+injector_instance = injector.Injector([MyModule()])
+
+# Resolve dependencies
+service = injector_instance.get(Service)
+
+# Use the service
+service.logger.log(f"Connected to database: {service.database.name}")  # Output: Logging message: Connected to database: MyDatabase
